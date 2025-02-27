@@ -13,7 +13,7 @@
                     <p class="card-text">
                         <a href="{% url 'post_detail' p.uniqueId %}">{{ p.content }}</a>
                     </p>
-                    <div class="d-flex gap-1">
+                    <div class="d-flex gap-1 align-items-lg-baseline">
                         {% if p.uniqueId in liked_post_ids %}
                             <span class="d-flex gap-1">
                                 <a href={% url 'toggle_like_post' post_id=p.uniqueId sender='index' %}>
