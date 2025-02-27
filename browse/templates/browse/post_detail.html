@@ -30,6 +30,21 @@
       {% endif %}
     </div>
   </div>
+
+  <form action="{% url 'post_detail' post.uniqueId %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+  </form>
+
+  <ul>
+    {% for reply in replies %}
+      <li>
+        By {{ reply.author }}: {{ reply.content }}
+      </li>
+    {% endfor %}
+  </ul>
+
   {% if is_user_moderator or logged_in_as == post.author.username %}
     <div class="manage-btn-dropdown">
       <div class="btn-group">

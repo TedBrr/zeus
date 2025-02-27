@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .forms import NewPostForm
+from .forms import NewPostForm, NewReplyForm
 from .models import Post, Action, Mute, Like
 
 # Create your views here.
@@ -47,6 +47,18 @@ def post_detail(request, post_id):
   has_user_liked_this = Like.objects.filter(liker=request.user, post=Post.objects.filter(pk=post_id).first()).exists()
 
   likes = Like.objects.filter(post=Post.objects.get(uniqueId=post_id))
+  replies = Post.objects.filter(parent=Post.objects.get(uniqueId=post_id))
+
+  if request.method == "POST":
+    form = NewReplyForm(request.POST)
+    if form.is_valid():
+      new_reply = form.save(commit=False)
+      new_reply.author = request.user
+      new_reply.parent = Post.objects.filter(pk=post_id).first()
+      new_reply.save()
+      return HttpResponseRedirect(reverse('post_detail', args=[post.uniqueId]))
+  else:
+    form = NewReplyForm()
 
   context = {
     "post": post,
@@ -54,6 +66,8 @@ def post_detail(request, post_id):
     "is_user_moderator": is_user_moderator,
     "has_user_liked_this": has_user_liked_this,
     "likes": likes,
+    "form": form,
+    "replies": replies,
   }
 
   return render(request, "browse/post_detail.html", context)
