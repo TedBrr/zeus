@@ -40,7 +40,7 @@
   <ul>
     {% for reply in replies %}
       <li>
-        By {{ reply.author }}: {{ reply.content }}
+        By {{ reply.author }} - {{ reply.short_age }}: {{ reply.content }}
       </li>
     {% endfor %}
   </ul>
